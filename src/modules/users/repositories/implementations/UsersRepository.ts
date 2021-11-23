@@ -1,42 +1,63 @@
-import { User } from "../../model/User";
-import { IUsersRepository, ICreateUserDTO } from "../IUsersRepository";
+import { User } from '../../model/User'
+import { IUsersRepository, ICreateUserDTO } from '../IUsersRepository'
 
 class UsersRepository implements IUsersRepository {
-  private users: User[];
+  private users: User[]
 
-  private static INSTANCE: UsersRepository;
+  private static INSTANCE: UsersRepository
 
   private constructor() {
-    this.users = [];
+    this.users = []
   }
 
   public static getInstance(): UsersRepository {
     if (!UsersRepository.INSTANCE) {
-      UsersRepository.INSTANCE = new UsersRepository();
+      UsersRepository.INSTANCE = new UsersRepository()
     }
 
-    return UsersRepository.INSTANCE;
+    return UsersRepository.INSTANCE
   }
 
   create({ name, email }: ICreateUserDTO): User {
-    // Complete aqui
+    const user = new User()
+
+    Object.assign(user, {
+      name,
+      email,
+    })
+
+    this.users.push(user)
+
+    return user
   }
 
   findById(id: string): User | undefined {
-    // Complete aqui
+    const user = this.users.find((user) => user.id === id)
+
+    return user
   }
 
   findByEmail(email: string): User | undefined {
-    // Complete aqui
+    const user = this.users.find((user) => user.email === email)
+
+    return user
   }
 
   turnAdmin(receivedUser: User): User {
-    // Complete aqui
+    const updatedUser = Object.assign(receivedUser, {
+      admin: true,
+      updated_at: new Date(),
+    })
+
+    const userIndex = this.users.findIndex((user) => user.id === updatedUser.id)
+    this.users.splice(userIndex, 1, updatedUser)
+
+    return updatedUser
   }
 
   list(): User[] {
-    // Complete aqui
+    return this.users
   }
 }
 
-export { UsersRepository };
+export { UsersRepository }
